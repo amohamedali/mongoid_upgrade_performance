@@ -4,6 +4,13 @@ Model::Account
 module Mongoid
   Tenants = Module.new
 
+  module Collections
+    included do
+      class_attribute :_collection, :collection_name
+      self.collection_name = self.name.collectionize
+    end
+  end
+
   def create_tenant(klass, name, db_name = nil)
     db_name ||= name
     namespaced_klass_name = klass_name = klass.name
@@ -26,9 +33,9 @@ module Mongoid
     end
 
     if !sub_module.const_defined?(klass_name, false)
-      Thread.current[:db_name] = db_name
       sub_module.const_set(klass_name, kls = Class.new(klass))
       kls.class_eval <<-RUBY, __FILE__, __LINE__ + 1
+        set_database :#{db_name}
 
         def self.hereditary?
           ::#{namespaced_klass_name}.hereditary?

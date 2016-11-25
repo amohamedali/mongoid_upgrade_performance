@@ -5,8 +5,8 @@ class SimpleExample
 
 
   def create_message payload
-    account = Model::Account.find_by(name: payload["account"])
-    channel = account.channels.find_by(name: payload["channel"])
+    account = Model::Account.where(name: payload["account"]).first
+    channel = account.channels.where(name: payload["channel"]).first
     dest = payload["dest"]
     message_payload = payload["payload"]
 

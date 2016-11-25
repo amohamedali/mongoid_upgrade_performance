@@ -20,7 +20,7 @@ class CacheExample
   def generate_cache
     Model::Account.all.map do |account|
       @accounts[account.name] = account
-      account.channels.each do | channel |
+      account.channels.all.each do | channel |
         @channels[account.name] ||= {}
         @channels[account.name][channel.name] = channel
       end

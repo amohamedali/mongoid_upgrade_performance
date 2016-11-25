@@ -10,34 +10,29 @@ module Model
     end
 
     def channels
-      constant = "Mongoid::Tenants::#{name.camelcase}::Model::Channel"
-      if !constant.safe_constantize
-        update_mongoid_config
-        Mongoid.create_tenant(Model::Channel, name, db_name)
-      end
-      Thread.current[:db_name] = db_name
-      constant.constantize
+      load_tenant_model Model::Channel
     end
 
     def messages
-      constant = "Mongoid::Tenants::#{name.camelcase}::Model::Message"
-      if !constant.safe_constantize
-        update_mongoid_config
-        Mongoid.create_tenant(Model::Message, name, db_name)
-      end
-      Thread.current[:db_name] = db_name
-      constant.constantize
+      load_tenant_model Model::Message
     end
 
     private
+      def load_tenant_model model_klass
+        constant = "Mongoid::Tenants::#{name.camelcase}::#{model_klass}"
+        if !constant.safe_constantize
+          update_mongoid_config
+          Mongoid.create_tenant(model_klass, name, db_name)
+        end
+        constant.constantize
+
+      end
+
       def update_mongoid_config
         if name
-          session_hash = {
-            "database" => "#{db_name}",
-            "hosts" => ["localhost:37017"]
-          }
-          # Add the new database configuration to the mongoid clients list
-          Mongoid.clients[db_name.to_sym] = session_hash
+          dbconf = {'database' => "mongoid_performance_db_#{db_name}", 'host' => 'localhost', 'port' => 27017}
+          mconfig = Mongoid::Config.databases
+          mconfig[db_name], mconfig["#{db_name}_slaves"] = Mongoid.config.send(:configure_databases, dbconf)
         end
       end
   end

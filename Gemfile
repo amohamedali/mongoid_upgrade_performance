@@ -1,7 +1,7 @@
-ruby '2.3.1'
+ruby '2.2.2'
 
 source 'https://rubygems.org'
-gem   'mongoid', '~> 5.1.4'
+gem   'mongoid', '~> 2.8.1'
 gem 'faker'
 gem 'bson_ext'
 
