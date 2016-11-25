@@ -1,0 +1,6 @@
+development:
+  clients:
+    default:
+      database: mongoid_performance_db
+      hosts:
+        - localhost:27017
