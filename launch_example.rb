@@ -2,8 +2,8 @@
 
 require_relative './.loader'
 
-SIMPLE_TIMES = 10_000
-CACHED_TIMES = 10_000
+SIMPLE_TIMES = 100_000
+CACHED_TIMES = 100_000
 
 def random_payload
   DataGenerator.instance.random_payload
@@ -18,17 +18,17 @@ def drop_data
 end
 drop_data # ensure all data are empty
 
-Benchmark.bmbm(20) do |x|
+Benchmark.bmbm(50) do |x|
 
   x.report("data generation") { generate_data }
 
-  x.report("simple example") do
+  x.report("simple example (#{SIMPLE_TIMES})") do
     SIMPLE_TIMES.times do
       SimpleExample.instance.create_message random_payload
     end
   end
 
-  x.report("cached example") do
+  x.report("cached example (#{CACHED_TIMES})") do
     CacheExample.instance.generate_cache
 
     CACHED_TIMES.times do
