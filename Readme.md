@@ -1,3 +1,21 @@
+This repository is meant to demonstrate issues explained in a [stackoverflow question](http://stackoverflow.com/questions/40792073/upgrade-mongoid-2-8-1-to-5-1-4-drops-performance)
+
+You can find 2 branches 5.1.4_performance and 2.8.1_performance with code for each version.
+
+## Install
+-----------
+
+install gems with `bundle install --path=.bundle`
+
+## Execution
+------------
+
+you can use the `launch_example.rb` script for that.
+change SIMPLE_TIMES and CACHED_TIMES variables to manipulate test loads.
+You can also change the TOTAL_ACCOUNT and TOTAL_CHANNELS variables to change test complexity.
+
+
+
 2.8.1 without indexes
 
         Rehearsal --------------------------------------------------------------------------------------
