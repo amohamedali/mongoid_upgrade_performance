@@ -10,26 +10,24 @@ module Model
     end
 
     def channels
-      constant = "Mongoid::Tenants::#{name.camelcase}::Model::Channel"
-      if !constant.safe_constantize
-        update_mongoid_config
-        Mongoid.create_tenant(Model::Channel, name, db_name)
-      end
-      Thread.current[:db_name] = db_name
-      constant.constantize
+      load_tenant_model Model::Channel
     end
 
     def messages
-      constant = "Mongoid::Tenants::#{name.camelcase}::Model::Message"
-      if !constant.safe_constantize
-        update_mongoid_config
-        Mongoid.create_tenant(Model::Message, name, db_name)
-      end
-      Thread.current[:db_name] = db_name
-      constant.constantize
+      load_tenant_model Model::Message
     end
 
     private
+      def load_tenant_model model_klass
+        constant = "Mongoid::Tenants::#{name.camelcase}::#{model_klass}"
+        if !constant.safe_constantize
+          update_mongoid_config
+          Mongoid.create_tenant(model_klass, name, db_name)
+        end
+        Thread.current[:db_name] = db_name
+        constant.constantize
+      end
+
       def update_mongoid_config
         if name
           session_hash = {
